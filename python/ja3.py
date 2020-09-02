@@ -116,7 +116,7 @@ def process_extensions(client_handshake):
     elliptic_curve = ""
     elliptic_curve_point_format = ""
     for ext_val, ext_data in client_handshake.extensions:
-        if not GREASE_TABLE.get(ext_val):
+        if not GREASE_TABLE.get(ext_val) and args.use_standard_extensions==False:
             exts.append(ext_val)
         if ext_val == 0x0a:
             a, b = parse_variable_array(ext_data, 2)
@@ -232,6 +232,7 @@ def process_pcap(pcap, any_port=False):
 
 
 def main():
+    global args
     """Intake arguments from the user and print out JA3 output."""
     desc = "A python script for extracting JA3 fingerprints from PCAP files"
     parser = argparse.ArgumentParser(description=(desc))
@@ -245,6 +246,9 @@ def main():
                         default=False, help=help_text)
     help_text = "Print packet related data for research (json only)"
     parser.add_argument("-r", "--research", required=False, action="store_true",
+                        default=False, help=help_text)
+    help_text = "Use Standard SSL Extensions, this allow indentify clients if you get some error"
+    parser.add_argument("-usx", "--use-standard-extensions", required=False, action="store_true",
                         default=False, help=help_text)
     args = parser.parse_args()
 

@@ -113,6 +113,8 @@ def process_extensions(server_handshake):
 
     exts = list()
     for ext_val, ext_data in server_handshake.extensions:
+        if args.use_standard_extensions:
+            continue
         exts.append(ext_val)
 
     results = list()
@@ -213,6 +215,7 @@ def process_pcap(pcap, any_port=False):
 
 
 def main():
+    global args
     """Intake arguments from the user and print out JA3 output."""
     desc = "A python script for extracting JA3 fingerprints from PCAP files"
     parser = argparse.ArgumentParser(description=(desc))
@@ -223,6 +226,9 @@ def main():
                         help=help_text)
     help_text = "Print out as JSON records for downstream parsing"
     parser.add_argument("-j", "--json", required=False, action="store_true",
+                        default=False, help=help_text)
+    help_text = "Use Standard SSL Extensions, this allow indentify clients if you get some error"
+    parser.add_argument("-usx", "--use-standard-extensions", required=False, action="store_true",
                         default=False, help=help_text)
     args = parser.parse_args()
 
